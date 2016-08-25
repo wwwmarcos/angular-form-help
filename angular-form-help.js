@@ -2,51 +2,59 @@
   'use strict';
 
   angular
-  .module('formHelp', [])
-  .directive('formHelpButton', formHelpButton);
+    .module('formHelp', [])
+    .directive('formHelpButton', formHelpButton);
 
-  formHelpButton.$inject = ['$rootScope']; 
-  function formHelpButton($rootScope){
+  formHelpButton.$inject = [];
+  function formHelpButton() {
     var directive = {
       require: '^form',
-      restrict : 'E',
-      scope : {
-      },
-      link : link,
+      restrict: 'E',
+      scope: {},
+      link: link,
       template: '<button type="submit">wow</button>'
     };
     return directive;
 
-    function link(scope, element, attrs, form){
-     var formElement = getElement(form.$name);
+    function link(scope, element, attrs, form) {
+      var formElement = getElement(form.$name);
 
-     scope.isInvalidForm = isInvalidForm;
-     scope.showErrors = showErrors;
+      formElement.bind('submit', function(event) {
+        if (isInvalidForm()) {
+          event.stopImmediatePropagation();
+          setDirty();
+          scope.$parent.$digest()
+          return;
+        };
+      });
 
-     formElement.bind('submit', function(event){
-       showErrors();
-       if (true) {
-        event.stopImmediatePropagation();  
-       };
-     });
+      function setDirty() {
+        for (var err in form.$error) {
+          form.$error[err].forEach(function(elementError, index) {
+            focusInput(elementError, index);
+            elementError.$setDirty();
+            addClass(elementError.$name);
+          });
+        };
+      };
 
-     function showErrors(){
-       var err = {};
-       for (err in form.$error){
-         form.$error[err].forEach(function(elementError){
-           var element = getElement(elementError.$name);
-           element.addClass('red');
-         });
-       };
-     };
+      function focusInput(elementError, index){
+        if (index === 0){
+          getElement(elementError.$name)[0].focus()
+        };
+      };
 
-     function isInvalidForm(){
-       return form.$invalid;
-     };
+      function addClass(elementName) {
+        getElement(elementName).addClass('wobble');
+      };
 
-     function getElement(selector){
-      return angular.element(document.getElementsByName(selector));
-     };
+      function isInvalidForm() {
+        return form.$invalid;
+      };
+
+      function getElement(selector) {
+        return angular.element(document.getElementsByName(selector));
+      };
 
     };
   };
