@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "start": "lite-server"
+  },
+  "dependencies": {
+    "bower": "^1.7.9",
+    "grunt": "^1.0.1"
+  },
+  "engines": {
+    "node": "0.12.2"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "grunt-wiredep": "^3.0.1",
+    "lite-server": "^2.1.0"
+  }
+}
