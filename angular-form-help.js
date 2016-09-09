@@ -10,9 +10,12 @@
     var directive = {
       require: '^form',
       restrict: 'E',
-      scope: {},
+      scope: {
+          btnClass : '@'
+        , label : '@'
+      },
       link: link,
-      template: '<button type="submit">wow</button>'
+      template: '<button type="submit" data-ng-class="btnClass">{{label}}</button>'
     };
     return directive;
 
@@ -22,15 +25,15 @@
       formElement.bind('submit', function(event) {
         if (isInvalidForm()) {
           event.stopImmediatePropagation();
-          setDirty();
+          setDirty(form.$error);
           scope.$parent.$digest()
           return;
         };
       });
 
-      function setDirty() {
-        for (var err in form.$error) {
-          form.$error[err].forEach(function(elementError, index) {
+      function setDirty(errors) {
+        for (var err in errors) {
+          errors[err].forEach(function(elementError, index) {
             focusInput(elementError, index);
             elementError.$setDirty();
             addClass(elementError.$name);
@@ -39,8 +42,11 @@
       };
 
       function focusInput(elementError, index){
+        if (isNgForm(elementError.$error)){
+          return setDirty(elementError.$error);
+        };
         if (index === 0){
-          getElement(elementError.$name)[0].focus()
+          getElement(elementError.$name)[0].focus();
         };
       };
 
@@ -50,6 +56,15 @@
 
       function isInvalidForm() {
         return form.$invalid;
+      };
+
+      function isNgForm(errors){
+        for (var err in errors) {
+          if (angular.isArray(errors[err])){
+            return true
+          };
+        };
+        return false
       };
 
       function getElement(selector) {
