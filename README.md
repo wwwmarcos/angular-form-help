@@ -3,10 +3,7 @@
 Prototype of a future component.
 
 ##What does it do?
- 
-   Verify input errors and ng-form errors on submit ->
-  
-    if invalid, block submit, adds class to inputs and set $dirty to all invalids
+ Verify input errors and ng-form errors on submit. If form is invalid, block submit, adds class to inputs and set `$dirty` to all invalids.
 
 ##Usage example
 
