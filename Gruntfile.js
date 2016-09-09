@@ -4,8 +4,25 @@ module.exports = function(grunt) {
       target: {
         src: 'index.html'
       }
+    },
+    browserSync: {
+      dev:{
+        bsFiles: {
+          src: [
+          '**/*.html',
+          '**/*.css',
+          '**/*.js' 
+          ]
+        },
+        options: {
+          server: {
+            baseDir: './'
+          }
+        }
+      }
     }
   });
   grunt.loadNpmTasks('grunt-wiredep');
-  grunt.registerTask('default', ['wiredep']);
+  grunt.loadNpmTasks('grunt-browser-sync');
+  grunt.registerTask('default', ['wiredep', 'browserSync']);
 };
